@@ -56,7 +56,7 @@ public class CommentController {
         Comment comment = commentService.createComment(articleId,content,userId);
         if(comment == null){
             resTfulAPIUtil.setStatusCode(StatusCode.ERROR);
-            resTfulAPIUtil.setMassage("添加失败！");
+            resTfulAPIUtil.setMassage("不可评论！");
         }else{
             resTfulAPIUtil.putData("comment",comment);
         }
@@ -75,7 +75,7 @@ public class CommentController {
         Comment comment = commentService.createReply(articleId,content,userId,parentId,replyUserId);
         if(comment == null){
             resTfulAPIUtil.setStatusCode(StatusCode.ERROR);
-            resTfulAPIUtil.setMassage("添加失败！");
+            resTfulAPIUtil.setMassage("不可回复！");
         }else{
             resTfulAPIUtil.putData("comment",comment);
         }

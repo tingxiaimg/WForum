@@ -26,7 +26,7 @@
                     <div class="home-articles-box">
                         <div class="wforum-editor wforum-richtxt" v-html="article.htmlContent"></div>
                     </div>
-                    <div class="article-actions">
+                    <div v-if="canRead" class="article-actions">
                         <div class="article-share">
                             <div class="article-share-btn" @click="collect">
                                 <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;" :color="alreadyCollect ? '#5cadff' : ''"></Icon>
@@ -51,9 +51,10 @@
                 </div>
 
                 <div class="wforum-cell comment-box">
-                    <div class="title total-reply-count">{{article.commentCount > 0 ? article.commentCount : '暂无'}}回复</div>
+                    <div v-if="canRead" class="title total-reply-count">{{article.commentCount > 0 && canRead ? article.commentCount : '暂无'}}回复</div>
+                    <div v-else class="title total-reply-count">该话题不能回复</div>
                     <div class="comment-content">
-                        <template v-if="article.commentCount > 0">
+                        <template v-if="article.commentCount > 0 && canRead">
                             <div :id="`reply-${item.id}`" class="comment-item" v-for="(item, index) in article.comments">
                                 <div class="reply-user-icon-box">
                                     <a :href="'/user/' + item.user.id" target="_blank" class="reply-user-icon">
@@ -112,22 +113,29 @@
                                 </div>
                             </div>
                         </template>
+                        <template v-if="canRead">
                         <p class="not-signin" v-if="!article.commentCount && user">暂时还没有人评论过这个话题</p>
                         <p class="not-signin" v-if="!article.commentCount && !user">暂时还没有人评论过这个话题,&nbsp;要评论话题, 请先&nbsp;<a @click="onSignin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
                         <p class="not-signin not-signin-border" v-if="article.commentCount && !user">要评论话题, 请先&nbsp;<a @click="onSignin">登录</a>&nbsp;或&nbsp;<a href="/signup">注册</a></p>
+                        </template>
+                        <template v-else>
+                            <p class="not-signin">回复已被屏蔽</p>
+                        </template>
                     </div>
                 </div>
-                <div class="wforum-cell comment-box" v-if="user && replyArticle">
-                    <div class="title add-reply-title">添加评论</div>
-                    <div class="comment-content">
-                        <Form ref="formData" :model="formData" :rules="formRule">
-                            <Form-item prop="content">
-                                <md-editor :user="user" :value="formData.content" @change="onContentChage" />
-                            </Form-item>
-                        </Form>
-                        <Button type="primary" @click="onSubmitReply">发表评论</Button>
+                <template v-if="canRead">
+                    <div class="wforum-cell comment-box" v-if="user && replyArticle">
+                        <div class="title add-reply-title">添加评论</div>
+                        <div class="comment-content">
+                            <Form ref="formData" :model="formData" :rules="formRule">
+                                <Form-item prop="content">
+                                    <md-editor :user="user" :value="formData.content" @change="onContentChage" />
+                                </Form-item>
+                            </Form>
+                            <Button type="primary" @click="onSubmitReply">发表评论</Button>
+                        </div>
                     </div>
-                </div>
+                </template>
             </div>
         </div>
         <Modal
@@ -271,6 +279,7 @@
                         })
                     }
                     let isAuthor = context.user && context.user.id === article.user.id
+                    let canRead = isAuthor ? true : context.user ? context.user.role === 2 : false
                     let floorMap = {}
                     for (let i = 0; i < article.comments.length; i++) {
                         article.comments[i].replyVisible = false
@@ -295,7 +304,8 @@
                         recentArticles: recentArticles,
                         collectDirList: collectDirList,
                         alreadyCollect: alreadyCollect,
-                        alreadyCollectID: alreadyCollectID
+                        alreadyCollectID: alreadyCollectID,
+                        canRead: canRead
                     }
                 })
             }).catch(err => {

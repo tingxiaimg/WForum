@@ -37,8 +37,10 @@ public class CollectService {
     public Collect addCollect(Integer articleId,Integer folderId,Integer userId){
         Article article = articleMapper.selectByPrimaryKey(articleId);
         Folder folder = folderMapper.selectByPrimaryKey(folderId);
-
         if(article !=null && folder !=null){
+            if(!article.getId().equals(1)){
+                return null;
+            }
             Boolean isCollect = collectMapper.selectIsCollect(articleId,userId) > 0;
             if(isCollect){return null;}
             Collect collect = new Collect();

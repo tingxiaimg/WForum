@@ -87,6 +87,9 @@ public class CommentService {
         if(article ==null){
             return null;
         }
+        if(!article.getId().equals(1)){
+            return null;
+        }
         if(!"article".equals(sourceName) && !"comment".equals(sourceName)){
             return null;
         }
