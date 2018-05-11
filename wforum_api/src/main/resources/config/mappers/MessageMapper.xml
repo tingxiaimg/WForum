@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tingxia.dao.MessageMapper">
+  <resultMap id="BaseResultMap" type="com.tingxia.pojo.Message">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="from_user_id" jdbcType="INTEGER" property="fromUserId" />
+    <result column="to_user_id" jdbcType="INTEGER" property="toUserId" />
+    <result column="source_id" jdbcType="INTEGER" property="sourceId" />
+    <result column="source_name" jdbcType="VARCHAR" property="sourceName" />
+    <result column="article_id" jdbcType="INTEGER" property="articleId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="deleted_at" jdbcType="TIMESTAMP" property="deletedAt" />
+    <result column="readed" jdbcType="BIT" property="readed" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <association property="fromUser" select="com.tingxia.dao.UserMapper.selectUserPublicInfo" column="from_user_id"/>
+    <association property="toUser" select="com.tingxia.dao.UserMapper.selectUserPublicInfo" column="to_user_id"/>
+    <association property="article" select="com.tingxia.dao.ArticleMapper.selectByPrimaryKey" column="article_id"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, from_user_id, to_user_id, source_id, source_name, article_id, created_at, updated_at,
+    deleted_at, readed, type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from messages
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from messages
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tingxia.pojo.Message" useGeneratedKeys="true" keyProperty="id">
+    insert into messages (from_user_id, to_user_id,
+      source_id, source_name, article_id,
+      created_at, updated_at, deleted_at, 
+      readed, type)
+    values (#{fromUserId,jdbcType=INTEGER}, #{toUserId,jdbcType=INTEGER},
+      #{sourceId,jdbcType=INTEGER}, #{sourceName,jdbcType=VARCHAR}, #{articleId,jdbcType=INTEGER},
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, #{deletedAt,jdbcType=TIMESTAMP}, 
+      #{readed,jdbcType=BIT}, #{type,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tingxia.pojo.Message">
+    update messages
+    <set>
+      <if test="fromUserId != null">
+        from_user_id = #{fromUserId,jdbcType=INTEGER},
+      </if>
+      <if test="toUserId != null">
+        to_user_id = #{toUserId,jdbcType=INTEGER},
+      </if>
+      <if test="sourceId != null">
+        source_id = #{sourceId,jdbcType=INTEGER},
+      </if>
+      <if test="sourceName != null">
+        source_name = #{sourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="articleId != null">
+        article_id = #{articleId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deletedAt != null">
+        deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="readed != null">
+        readed = #{readed,jdbcType=BIT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tingxia.pojo.Message">
+    update messages
+    set from_user_id = #{fromUserId,jdbcType=INTEGER},
+      to_user_id = #{toUserId,jdbcType=INTEGER},
+      source_id = #{sourceId,jdbcType=INTEGER},
+      source_name = #{sourceName,jdbcType=VARCHAR},
+      article_id = #{articleId,jdbcType=INTEGER},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      readed = #{readed,jdbcType=BIT},
+      type = #{type,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByUser" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from messages
+    where to_user_id = #{id,jdbcType=INTEGER}
+    <if test="isRead">
+      and readed = 1
+    </if>
+    <if test="!isRead">
+      and readed = 0
+    </if>
+  </select>
+  <update id="updateReaded" parameterType="java.lang.Integer">
+    update messages set readed = 1 where id = #{id,jdbcType=INTEGER} and to_user_id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>

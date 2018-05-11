@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tingxia.dao.FolderMapper">
+  <resultMap id="BaseResultMap" type="com.tingxia.pojo.Folder">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="deleted_at" jdbcType="TIMESTAMP" property="deletedAt" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <association property="collectCount" column="id" select="com.tingxia.dao.CollectMapper.selectFolderCollectCount"/>
+  </resultMap>
+  <resultMap id="ResultMapOfCollect" extends="BaseResultMap" type="com.tingxia.pojo.Folder">
+    <collection property="collects" column="{folderId=id,userId=user_id}" ofType="com.tingxia.pojo.Collect" select="com.tingxia.dao.CollectMapper.selectFolderCollects"/>
+  </resultMap>
+  <!--查询所有的，包括子收藏夹-->
+  <resultMap id="ResultMapOfAll" type="com.tingxia.pojo.Folder" extends="ResultMapOfCollect">
+    <collection property="children" column="id" select="selectChildren" ofType="com.tingxia.pojo.Folder"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, created_at, updated_at, deleted_at, name, parent_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from folders
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectChildren" resultMap="ResultMapOfAll" parameterType="java.lang.Integer">
+    select
+      <include refid="Base_Column_List"/>
+    from folders
+    where parent_id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from folders
+    where user_id = #{id,jdbcType=INTEGER}
+    order by created_at
+  </select>
+  <select id="selectFoldersWithCollects" parameterType="java.lang.Integer" resultMap="ResultMapOfCollect">
+    select
+    <include refid="Base_Column_List"/>
+    from folders
+    where user_id = #{userId,jdbcType=INTEGER}
+    order by created_at
+  </select>
+  <select id="selectWithCollects" parameterType="java.lang.Integer" resultMap="ResultMapOfCollect">
+    select
+    <include refid="Base_Column_List"/>
+    from folders
+    where id = #{id,jdbcType=INTEGER} and user_id = #{userId,jdbcType=INTEGER}
+    order by created_at
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from folders
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tingxia.pojo.Folder" useGeneratedKeys="true" keyProperty="id">
+    insert into folders (user_id, created_at,
+      updated_at, deleted_at, name, 
+      parent_id)
+    values (#{userId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP},
+      #{updatedAt,jdbcType=TIMESTAMP}, #{deletedAt,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tingxia.pojo.Folder">
+    update folders
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deletedAt != null">
+        deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tingxia.pojo.Folder">
+    update folders
+    set user_id = #{userId,jdbcType=INTEGER},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      name = #{name,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

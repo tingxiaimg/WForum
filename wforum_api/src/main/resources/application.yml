@@ -1,0 +1,38 @@
+server:
+  port: 8089
+spring:
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:ss
+  datasource:
+    name: WForum
+    url: jdbc:mysql://localhost:3306/wforum?useUnicode=true&characterEncoding=utf8
+    username: wforum
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+  #redis
+  redis:
+    port: 7000
+    host: 192.168.229.200
+    password: wforum
+    cluster:
+      max-redirects: 3
+      nodes: 192.168.229.200:7000,192.168.229.200:7001,192.168.229.200:7002,192.168.229.200:7003,192.168.229.200:7004,192.168.229.200:7005
+
+mybatis:
+  mapper-locations: classpath*:config/mappers/*.xml
+  type-aliases-package: com.tingxia.pojo
+
+#pagehelper分页插件
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+wforum:
+  server:
+    base-file-path: e:/WForum
+  cors:
+    allowedOrigins: http://127.0.0.1:8020,http://localhost:8020,http://192.168.229.200:80,http://localhost:80,http://localhost,http://192.168.169.148
+
+
+

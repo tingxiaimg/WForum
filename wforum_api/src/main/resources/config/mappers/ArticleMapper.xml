@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tingxia.dao.ArticleMapper">
+  <resultMap id="BaseResultMap" type="com.tingxia.pojo.Article">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="browse_count" jdbcType="INTEGER" property="browseCount" />
+    <result column="comment_count" jdbcType="INTEGER" property="commentCount" />
+    <result column="collect_count" jdbcType="INTEGER" property="collectCount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="content_type" jdbcType="INTEGER" property="contentType" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="deleted_at" jdbcType="TIMESTAMP" property="deletedAt" />
+    <result column="last_comment_at" jdbcType="TIMESTAMP" property="lastCommentAt" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="last_user_id" jdbcType="INTEGER" property="lastUserId" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapAll" type="com.tingxia.pojo.Article">
+    <association property="user" column="user_id" select="com.tingxia.dao.UserMapper.selectUserPublicInfo"/>
+    <association property="lastUser" column="last_user_id" select="com.tingxia.dao.UserMapper.selectUserPublicInfo"/>
+    <collection property="categories" column="id" select="com.tingxia.dao.CategorieMapper.selectByArticle" ofType="com.tingxia.pojo.Category"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, browse_count, comment_count, collect_count, status, content_type, created_at, 
+    updated_at, deleted_at, last_comment_at, user_id, last_user_id ,content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from articles
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAllByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapAll">
+    select
+    <include refid="Base_Column_List" />
+    from articles
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from articles
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tingxia.pojo.Article" useGeneratedKeys="true" keyProperty="id">
+    insert into articles (name, browse_count,
+      comment_count, collect_count, status, 
+      content_type, created_at, updated_at, 
+      deleted_at, last_comment_at, user_id, 
+      last_user_id, content)
+    values ( #{name,jdbcType=VARCHAR}, #{browseCount,jdbcType=INTEGER},
+      #{commentCount,jdbcType=INTEGER}, #{collectCount,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{contentType,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{deletedAt,jdbcType=TIMESTAMP}, #{lastCommentAt,jdbcType=TIMESTAMP}, #{userId,jdbcType=INTEGER}, 
+      #{lastUserId,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tingxia.pojo.Article">
+    update articles
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="browseCount != null">
+        browse_count = #{browseCount,jdbcType=INTEGER},
+      </if>
+      <if test="commentCount != null">
+        comment_count = #{commentCount,jdbcType=INTEGER},
+      </if>
+      <if test="collectCount != null">
+        collect_count = #{collectCount,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="contentType != null">
+        content_type = #{contentType,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deletedAt != null">
+        deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastCommentAt != null">
+        last_comment_at = #{lastCommentAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="lastUserId != null">
+        last_user_id = #{lastUserId,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tingxia.pojo.Article">
+    update articles
+    set name = #{name,jdbcType=VARCHAR},
+      browse_count = #{browseCount,jdbcType=INTEGER},
+      comment_count = #{commentCount,jdbcType=INTEGER},
+      collect_count = #{collectCount,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      content_type = #{contentType,jdbcType=INTEGER},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      last_comment_at = #{lastCommentAt,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=INTEGER},
+      last_user_id = #{lastUserId,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectArticleList" resultType="com.tingxia.pojo.Article" resultMap="ResultMapAll">
+    select
+    <include refid="Base_Column_List" />
+    from articles
+    <where>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="userId !=null">
+        and user_id = #{userId,jdbcType=INTEGER}
+      </if>
+      <if test="cate != null">
+        and id in (select article_id as id from article_category where category_id = #{cate,jdbcType=INTEGER})
+      </if>
+      <if test="cate == null">
+        and id in (select article_id as id from article_category)
+      </if>
+      <if test="startAt != null">
+        and created_at &gt;= #{startAt}
+      </if>
+      <if test="endAt != null">
+        and created_at &lt; #{endAt}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectTopArticle" resultType="com.tingxia.pojo.Article"  resultMap="ResultMapAll">
+    select
+      a.id, name, a.browse_count, a.comment_count, a.collect_count, a.status, a.content_type, a.created_at,
+      a.updated_at, a.deleted_at, a.last_comment_at, a.user_id, a.last_user_id ,a.content
+    from articles a inner join top_articles t on a.id = t.article_id
+    where a.status = 1 and a.id in (select article_id as id from article_category)
+    order by t.created_at desc
+  </select>
+
+  <update id="changCount" parameterType="java.lang.Integer">
+    update articles
+    <set>
+      <choose>
+        <when test="target == 1">
+          collect_count = collect_count + #{offset,jdbcType=INTEGER}
+        </when>
+        <when test="target == 2">
+          browse_count = browse_count + #{offset,jdbcType=INTEGER}
+        </when>
+        <when test="target == 3">
+          comment_count = comment_count + #{offset,jdbcType=INTEGER}
+        </when>
+      </choose>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectTopArticleCount" resultType="java.lang.Integer">
+    select count(1) from top_articles
+  </select>
+  <delete id="deleteTop" parameterType="java.lang.Integer">
+    delete from top_articles where article_id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertTop" parameterType="java.lang.Integer">
+    insert into top_articles (article_id,created_at,updated_at,deleted_at)
+    values (#{articleId,jdbcType=INTEGER},now(),now(),null)
+  </insert>
+  <select id="selectIsTop" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(1) from top_articles where article_id = #{articleId,jdbcType=INTEGER}
+  </select>
+</mapper>

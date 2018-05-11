@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tingxia.dao.CategorieMapper">
+  <resultMap id="BaseResultMap" type="com.tingxia.pojo.Category">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sequence" jdbcType="INTEGER" property="sequence" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="deleted_at" jdbcType="TIMESTAMP" property="deletedAt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, sequence, parent_id, created_at, updated_at, deleted_at
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from categories
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from categories
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tingxia.pojo.Category" useGeneratedKeys="true" keyProperty="id">
+    insert into categories (name, sequence,
+      parent_id, created_at, updated_at, 
+      deleted_at)
+    values ( #{name,jdbcType=VARCHAR}, #{sequence,jdbcType=INTEGER},
+      #{parentId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}, 
+      #{deletedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tingxia.pojo.Category">
+    update categories
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sequence != null">
+        sequence = #{sequence,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deletedAt != null">
+        deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tingxia.pojo.Category">
+    update categories
+    set name = #{name,jdbcType=VARCHAR},
+      sequence = #{sequence,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      deleted_at = #{deletedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByArticle" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+      c.id, name, sequence, parent_id, created_at, updated_at, deleted_at
+    from categories c left join article_category a on c.id=a.category_id
+    where article_id = #{id,jdbcType=INTEGER} and sequence=0
+  </select>
+
+  <select id="selectAll" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from categories
+    <where>
+      <if test="sequence != null">
+        sequence = #{sequence,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        and parent_id = #{parentId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+
+  <insert id="insertArticleCategoryId" parameterType="java.lang.Integer">
+    insert into article_category (article_id,category_id)
+    VALUES
+    <foreach collection="categoryIds" item="item" index="index" separator=",">
+      (#{articleId},#{item})
+    </foreach>
+  </insert>
+
+  <delete id="deleteArticleCategory" parameterType="java.lang.Integer">
+    delete from article_category where article_id = #{articleId,jdbcType=INTEGER}
+  </delete>
+
+</mapper>

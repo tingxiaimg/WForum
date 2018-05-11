@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tingxia.dao.UserMapper">
+  <resultMap id="BaseResultMap_Public" type="com.tingxia.pojo.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="deleted_at" jdbcType="TIMESTAMP" property="deletedAt" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="score" jdbcType="INTEGER" property="score" />
+    <result column="article_count" jdbcType="INTEGER" property="articleCount" />
+    <result column="collect_count" jdbcType="INTEGER" property="collectCount" />
+    <result column="signature" jdbcType="VARCHAR" property="signature" />
+    <result column="role" jdbcType="INTEGER" property="role" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
+    <result column="cover_url" jdbcType="VARCHAR" property="coverUrl" />
+    <result column="comment_count" jdbcType="INTEGER" property="commentCount" />
+    <result column="sex" jdbcType="BIT" property="sex" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+  </resultMap>
+  <resultMap id="BaseResultMap_Full" type="com.tingxia.pojo.User" extends="BaseResultMap_Public">
+    <collection property="schools" ofType="com.tingxia.pojo.School" column="id" select="com.tingxia.dao.SchoolMapper.selectByUser"/>
+    <collection property="careers" ofType="com.tingxia.pojo.Career" column="id" select="com.tingxia.dao.CareerMapper.selectByUser"/>
+  </resultMap>
+  <resultMap id="BaseResultMap" type="com.tingxia.pojo.User" extends="BaseResultMap_Full">
+    <result column="pass" jdbcType="VARCHAR" property="pass" />
+  </resultMap>
+  <sql id="Base_Column_List_Public">
+    id, created_at, updated_at, deleted_at, name, email, phone, score, article_count,
+    collect_count, signature, role, status, avatar_url, cover_url, comment_count, sex,
+    location, introduce
+  </sql>
+  <sql id="Base_Column_List" >
+    id, created_at, updated_at, deleted_at, name, email, phone, pass, score, article_count, 
+    collect_count, signature, role, status, avatar_url, cover_url, comment_count, sex, 
+    location, introduce
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from users
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!--通过邮件查询用户信息-->
+  <select id="selectByEmail" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from users
+    where email = #{email,jdbcType=INTEGER}
+  </select>
+  <!--通过昵称查询用户信息-->
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from users
+    where name = #{name,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from users
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tingxia.pojo.User" useGeneratedKeys="true" keyProperty="id">
+    insert into users (created_at, updated_at,
+      deleted_at, name, email, 
+      phone, pass, score, 
+      article_count, collect_count, signature, 
+      role, status, avatar_url, 
+      cover_url, comment_count, sex, 
+      location, introduce)
+    values (#{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP},
+      #{deletedAt,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{pass,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, 
+      #{articleCount,jdbcType=INTEGER}, #{collectCount,jdbcType=INTEGER}, #{signature,jdbcType=VARCHAR}, 
+      #{role,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{avatarUrl,jdbcType=VARCHAR}, 
+      #{coverUrl,jdbcType=VARCHAR}, #{commentCount,jdbcType=INTEGER}, #{sex,jdbcType=BIT}, 
+      #{location,jdbcType=VARCHAR}, #{introduce,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tingxia.pojo.User">
+    update users
+    <set>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deletedAt != null">
+        deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="pass != null">
+        pass = #{pass,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="articleCount != null">
+        article_count = #{articleCount,jdbcType=INTEGER},
+      </if>
+      <if test="collectCount != null">
+        collect_count = #{collectCount,jdbcType=INTEGER},
+      </if>
+      <if test="signature != null">
+        signature = #{signature,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        role = #{role,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="avatarUrl != null">
+        avatar_url = #{avatarUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="coverUrl != null">
+        cover_url = #{coverUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="commentCount != null">
+        comment_count = #{commentCount,jdbcType=INTEGER},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=BIT},
+      </if>
+      <if test="location != null">
+        location = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null">
+        introduce = #{introduce,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tingxia.pojo.User">
+    update users
+    set created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      name = #{name,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      pass = #{pass,jdbcType=VARCHAR},
+      score = #{score,jdbcType=INTEGER},
+      article_count = #{articleCount,jdbcType=INTEGER},
+      collect_count = #{collectCount,jdbcType=INTEGER},
+      signature = #{signature,jdbcType=VARCHAR},
+      role = #{role,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      avatar_url = #{avatarUrl,jdbcType=VARCHAR},
+      cover_url = #{coverUrl,jdbcType=VARCHAR},
+      comment_count = #{commentCount,jdbcType=INTEGER},
+      sex = #{sex,jdbcType=BIT},
+      location = #{location,jdbcType=VARCHAR},
+      introduce = #{introduce,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectUserPublicInfo" parameterType="java.lang.Integer" resultMap="BaseResultMap_Public">
+    select
+    <include refid="Base_Column_List_Public"/>
+    from users where id = #{id}
+  </select>
+  <select id="selectUserDetailInfo" parameterType="java.lang.Integer" resultMap="BaseResultMap_Full">
+    select
+    <include refid="Base_Column_List_Public" />
+    from users
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectUserList" resultMap="BaseResultMap_Public">
+    select
+      <include refid="Base_Column_List_Public"/>
+    from users
+    <where>
+      <if test="role != null">
+        role = #{role,jdbcType=INTEGER}
+      </if>
+      <if test="status != null">
+        and status = #{status,jdbcType=INTEGER}
+      </if>
+      <if test="startAt != null">
+        and created_at &gt;= #{startAt}
+      </if>
+      <if test="endAt != null">
+        and created_at &lt; #{endAt}
+      </if>
+    </where>
+  </select>
+
+  <update id="changCount" parameterType="java.lang.Integer">
+    update users
+    <set>
+      <choose>
+        <when test="target == 0">
+          score = score + #{offset,jdbcType=INTEGER}
+        </when>
+        <when test="target == 1">
+          collect_count = collect_count + #{offset,jdbcType=INTEGER}
+        </when>
+        <when test="target == 2">
+          article_count = article_count + #{offset,jdbcType=INTEGER}
+        </when>
+        <when test="target == 3">
+          comment_count = comment_count + #{offset,jdbcType=INTEGER}
+        </when>
+      </choose>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateSex">
+    update users
+    <set>
+      <choose>
+        <when test="man">
+          sex = 0,
+        </when>
+        <when test="!man">
+          sex = 1,
+        </when>
+      </choose>
+      updated_at = now()
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateInfo">
+    update users
+    <set>
+      <choose>
+        <when test="type == 'signature'">
+          signature = #{source,jdbcType=VARCHAR},
+        </when>
+        <when test="type == 'avatarUrl'">
+          avatar_url = #{source,jdbcType=VARCHAR},
+        </when>
+        <when test="type == 'coverUrl'">
+          cover_url = #{source,jdbcType=VARCHAR},
+        </when>
+        <when test="type == 'location'">
+          location = #{source,jdbcType=VARCHAR},
+        </when>
+        <when test="type == 'introduce'">
+          introduce = #{source,jdbcType=VARCHAR},
+        </when>
+      </choose>
+      updated_at = now()
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

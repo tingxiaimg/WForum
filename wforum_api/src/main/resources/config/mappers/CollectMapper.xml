@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tingxia.dao.CollectMapper">
+  <resultMap id="BaseResultMap" type="com.tingxia.pojo.Collect">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="deleted_at" jdbcType="TIMESTAMP" property="deletedAt" />
+    <result column="article_id" jdbcType="INTEGER" property="articleId" />
+    <result column="folder_id" jdbcType="INTEGER" property="folderId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithArticle" type="com.tingxia.pojo.Collect">
+    <!--暂时用，看情况改为selectAllByPrimaryKey-->
+    <association property="article" column="article_id" select="com.tingxia.dao.ArticleMapper.selectByPrimaryKey"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, created_at, updated_at, deleted_at, article_id, folder_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from collects
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectFolderCollects" resultMap="ResultMapWithArticle" parameterType="java.util.Map">
+    select
+      <include refid="Base_Column_List"/>
+    from collects
+    <where>
+      folder_id = #{folderId,jdbcType=INTEGER}
+      <if test="userId != null">
+        and user_id = #{userId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+  <select id="selectFolderCollectCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(1) from collects where folder_id = #{folderId,jdbcType=INTEGER}
+  </select>
+  <select id="checkExist" parameterType="java.lang.Integer">
+    select count(1) from collects where article_id = #{articleId,jdbcType=INTEGER} and user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from collects
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tingxia.pojo.Collect" useGeneratedKeys="true" keyProperty="id">
+    insert into collects (user_id, created_at,
+      updated_at, deleted_at, article_id, folder_id)
+    values (#{userId,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP},
+      #{updatedAt,jdbcType=TIMESTAMP}, #{deletedAt,jdbcType=TIMESTAMP}, #{articleId,jdbcType=INTEGER}, #{folderId,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tingxia.pojo.Collect">
+    update collects
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null">
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deletedAt != null">
+        deleted_at = #{deletedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleId != null">
+        article_id = #{articleId,jdbcType=INTEGER},
+      </if>
+      <if test="folderId != null">
+        folder_id = #{folderId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectIsCollect" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(1) from collects where article_id = #{articleId,jdbcType=INTEGER} and user_id = #{userId,jdbcType=INTEGER}
+  </select>
+</mapper>

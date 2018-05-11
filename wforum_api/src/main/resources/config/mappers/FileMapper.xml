@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tingxia.dao.FileMapper">
+  <resultMap id="BaseResultMap" type="com.tingxia.pojo.File">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="md5" jdbcType="VARCHAR" property="md5" />
+    <result column="size" jdbcType="VARCHAR" property="size" />
+    <result column="local_path" jdbcType="VARCHAR" property="localPath" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="user_count" jdbcType="INTEGER" property="userCount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, md5, size, local_path, type, user_count, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from files
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByMD5" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from files
+    where md5 = #{md5,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from files
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tingxia.pojo.File" useGeneratedKeys="true" keyProperty="id">
+    insert into files (md5, size,
+      local_path, type, user_count, 
+      status)
+    values (#{md5,jdbcType=VARCHAR}, #{size,jdbcType=VARCHAR},
+      #{localPath,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{userCount,jdbcType=INTEGER},
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tingxia.pojo.File">
+    update files
+    <set>
+      <if test="md5 != null">
+        md5 = #{md5,jdbcType=VARCHAR},
+      </if>
+      <if test="size != null">
+        size = #{size,jdbcType=VARCHAR},
+      </if>
+      <if test="localPath != null">
+        local_path = #{localPath,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="userCount != null">
+        user_count = #{userCount,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tingxia.pojo.File">
+    update files
+    set md5 = #{md5,jdbcType=VARCHAR},
+      size = #{size,jdbcType=VARCHAR},
+      local_path = #{localPath,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      user_count = #{userCount,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="changeUserCount" parameterType="java.lang.Integer">
+    update files
+    set user_count = user_count + #{offset,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
