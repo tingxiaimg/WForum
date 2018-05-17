@@ -7,10 +7,7 @@ import com.tingxia.util.StatusCode;
 import com.tingxia.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -53,8 +50,10 @@ public class CategoryController {
         return resTfulAPIUtil.getAPI();
     }
 
-    @RequestMapping(value = "update", method = {RequestMethod.POST})
-    public Map update(HttpServletRequest req,Integer parentId,String name,Integer id){
+    @RequestMapping(value = "update", method = {RequestMethod.PUT})
+    public Map update(HttpServletRequest req, @RequestParam(value = "parentId",defaultValue = "0") Integer parentId,
+                      @RequestParam("name") String name,
+                      @RequestParam("id") Integer id){
         RESTfulAPIUtil resTfulAPIUtil = new RESTfulAPIUtil();
         Map r = userUtil.adminUtil(req,resTfulAPIUtil);
         if(r != null){
