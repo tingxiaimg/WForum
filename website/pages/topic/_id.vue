@@ -349,7 +349,7 @@
                             }
                         }).then(res => {
                             self.loading = false
-                            if (res.errNo === ErrorCode.SUCCESS) {
+                            if (res.status === ErrorCode.SUCCESS) {
                                 self.$Message.success({
                                     duration: config.messageDuration,
                                     closable: true,
@@ -362,7 +362,7 @@
                                 self.$Message.error({
                                     duration: config.messageDuration,
                                     closable: true,
-                                    content: res.msg
+                                    content: res.message
                                 })
                             }
                         }).catch(err => {
