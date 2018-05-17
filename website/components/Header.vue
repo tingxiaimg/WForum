@@ -19,6 +19,11 @@
                     <li><a href="/">话题</a></li>
                 </ul>
             </div>
+            <div class="wforum-top-header-nav">
+                <ul>
+                    <li><a href="https://github.com/tingxiaimg/WForum">源码</a></li>
+                </ul>
+            </div>
 			<div class="wforum-top-header-right">
                     <!--<li><a href="/" target="_blank">WForum源码</a></li> -->
                     <template v-if="user">

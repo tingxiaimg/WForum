@@ -173,6 +173,7 @@ public class ArticleService {
         }
         if(articleMapper.deleteByPrimaryKey(id)>0){
             articleMapper.deleteTop(id);
+            userMapper.changCount(article.getUserId(),-1,2);
             return true;
         }
         return false;
