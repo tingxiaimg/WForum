@@ -38,10 +38,12 @@ public class CollectService {
         Article article = articleMapper.selectByPrimaryKey(articleId);
         Folder folder = folderMapper.selectByPrimaryKey(folderId);
         if(article !=null && folder !=null){
-            if(!article.getId().equals(1)){
+            if(!article.getStatus().equals(1)){
                 return null;
             }
+            // System.out.println(articleId+":"+userId);
             Boolean isCollect = collectMapper.selectIsCollect(articleId,userId) > 0;
+            // System.out.println(isCollect);
             if(isCollect){return null;}
             Collect collect = new Collect();
             Date date = new Date();
