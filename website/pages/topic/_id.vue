@@ -279,7 +279,7 @@
                         })
                     }
                     let isAuthor = context.user && context.user.id === article.user.id
-                    let canRead = isAuthor ? true : context.user ? context.user.role === 2 : false
+                    let canRead = article.status === 1 ? true : isAuthor ? true : context.user ? context.user.role === 2 : false
                     let floorMap = {}
                     for (let i = 0; i < article.comments.length; i++) {
                         article.comments[i].replyVisible = false
