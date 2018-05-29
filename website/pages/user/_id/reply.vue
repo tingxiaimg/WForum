@@ -16,7 +16,7 @@
                         <span class="reply-no-source">原话题已被作者删除。</span>
                     </template>
                     <span v-else-if="comment.sourceName === 'comment' && comment.noComment" class="reply-no-source">原评论已被作者删除，点击浏览话题。</span>
-                    <span @click="deletComment(comment.id)" style="cursor: pointer;font-size: 16px;">[删除]</span>
+                    <span v-if="user && user.id == currentId" @click="deletComment(comment.id)" style="cursor: pointer;font-size: 16px;">[删除]</span>
                 </div>
                 <p class="articles-user-info">
                     <img class="articles-user-info-img" :src="comment.user.avatarUrl" alt="">

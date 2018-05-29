@@ -63,7 +63,7 @@ public class CommentService {
     public Boolean deleteComment(Integer id,Integer userId){
         //检测是否为当前用户的评论，避免出错
         Comment comment = commentMapper.selectByPrimaryKey(id);
-        if(comment.getId().equals(id)){
+        if(comment.getId().equals(id) && comment.getUserId().equals(userId)){
             // 删除评论
             int i = commentMapper.deleteByPrimaryKey(id);
             // 减少用户回复数

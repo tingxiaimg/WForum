@@ -31,8 +31,8 @@ public class ArticleController {
      */
     @RequestMapping("/list")
     public Map List(@RequestParam(required = false) final Integer cate
-            , @RequestParam(defaultValue = "200") final Integer pageSize
-            , @RequestParam(defaultValue = "1") final Integer pageNo){
+            ,@RequestParam(defaultValue = "200") final Integer pageSize
+            ,@RequestParam(defaultValue = "1") final Integer pageNo){
         RESTfulAPIUtil resTfulAPIUtil = new RESTfulAPIUtil();
         PageInfo<Article> pageInfo = new PageInfo(articleService.getArticleList(pageNo,pageSize,cate,1,null,null));
         resTfulAPIUtil.putData("totalCount",pageInfo.getTotal());

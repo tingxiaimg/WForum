@@ -5,14 +5,14 @@
 				<div class="wforum-logo-container">
                     <a href="/"><img src="/images/logo.png" /></a>
 				</div>
-				<div class="wforum-header-search">
+				<!-- <div class="wforum-header-search">
 					<form @submit.prevent="onSearch" action="" target="_blank" method="get" class="wforum-top-search">
                         <p style="position: relative;">
     						<input @focus="onInputFocus" @blur="onInputBlur" v-model="q" type="text" class="wforum-top-input" :style="{border: isInputFocus ? '1px #a2a2a2 solid' : '1px #e3e3e3 solid'}" name="topSearch">
                             <span class="search-icon"></span>
                         </p>
 					</form>
-				</div>
+				</div> -->
 			</div>
             <div class="wforum-top-header-nav">
                 <ul>
@@ -21,11 +21,11 @@
             </div>
             <div class="wforum-top-header-nav">
                 <ul>
-                    <li><a href="https://github.com/tingxiaimg/WForum">源码</a></li>
+                    <li><a href="https://github.com/tingxiaimg/WForum" target="_blank">源码</a></li>
                 </ul>
             </div>
 			<div class="wforum-top-header-right">
-                    <!--<li><a href="/" target="_blank">WForum源码</a></li> -->
+                    <!--<li><a href="https://github.com/tingxiaimg/WForum" target="_blank">WForum源码</a></li> -->
                     <template v-if="user">
                         <li class="user-message-wrapbox">
                             <Tooltip v-if="userMessages.length" trigger="hover" placement="bottom">
@@ -121,7 +121,7 @@
         },
         methods: {
             onSearch () {
-                // let searchURL = '/api/search/&q=' + encodeURIComponent(this.q)
+                // let searchURL = '/api/search?&q=' + encodeURIComponent(this.q)
                 // window.open(searchURL)
                 this.$Message.error({
                     content: '抱歉，该功能还未开放。',

@@ -23,7 +23,7 @@
                             </span>
                         </p>
                     </div>
-                    <div class="home-articles-box">
+                    <div v-if="canRead" class="home-articles-box">
                         <div class="wforum-editor wforum-richtxt" v-html="article.htmlContent"></div>
                     </div>
                     <div v-if="canRead" class="article-actions">
@@ -32,7 +32,7 @@
                                 <Icon type="android-star-outline" style="font-size: 20px;margin-top:-2px;" :color="alreadyCollect ? '#5cadff' : ''"></Icon>
                                 <span  :style="alreadyCollect ? { color:'#5cadff'} : {}">{{alreadyCollect ? '取消收藏' : '收藏'}}</span>
                             </div>
-                            <div class="article-share-btn">
+                            <div class="article-share-btn" @click="onShare(article.name, article.user.name)">
                                 <Icon type="android-share-alt" style="font-size: 16px"></Icon>
                                 <span>分享</span>
                             </div>
@@ -50,9 +50,8 @@
                     </div>
                 </div>
 
-                <div class="wforum-cell comment-box">
-                    <div v-if="canRead" class="title total-reply-count">{{article.commentCount > 0 && canRead ? article.commentCount : '暂无'}}回复</div>
-                    <div v-else class="title total-reply-count">该话题不能回复</div>
+                <div v-if="canRead" class="wforum-cell comment-box">
+                    <div class="title total-reply-count">{{article.commentCount > 0 ? article.commentCount : '暂无'}}评论</div>
                     <div class="comment-content">
                         <template v-if="article.commentCount > 0 && canRead">
                             <div :id="`reply-${item.id}`" class="comment-item" v-for="(item, index) in article.comments">
@@ -123,7 +122,7 @@
                         </template>
                     </div>
                 </div>
-                <template v-if="canRead">
+                <template v-if="article.status === 1">
                     <div class="wforum-cell comment-box" v-if="user && replyArticle">
                         <div class="title add-reply-title">添加评论</div>
                         <div class="comment-content">
@@ -281,7 +280,9 @@
                     let isAuthor = context.user && context.user.id === article.user.id
                     let canRead = article.status === 1 ? true : isAuthor ? true : context.user ? context.user.role === 2 : false
                     let floorMap = {}
+                    let commentCount = 0
                     for (let i = 0; i < article.comments.length; i++) {
+                        commentCount++
                         article.comments[i].replyVisible = false
                         article.comments[i].editReplyVisible = false
                         article.comments[i].showReply = false
@@ -291,6 +292,7 @@
                         article.comments[i].htmlContent = MD.render(article.comments[i].content || '')
                         floorMap[article.comments[i].id] = i + 1
                     }
+                    article.commentCount = commentCount
                     context.store.commit('topicAuthor', article.user)
                     context.store.commit('authorRecentArticles', recentArticles)
                     return {
@@ -776,6 +778,28 @@
                         content: err.message || err.msg
                     })
                 })
+            },
+            onShare (name, author) {
+                if (name == null) {
+                    return
+                }
+                let p = {
+                    url: location.href,
+                    showcount: '1',
+                    desc: '',
+                    summary: `来自WForum，作者：${author}`,
+                    title: name.trim(),
+                    site: 'WForum',
+                    pics: '',
+                    style: '203',
+                    width: 98,
+                    height: 22
+                }
+                let s = []
+                for (let i in p) {
+                    s.push(i + '=' + encodeURIComponent(p[i] || ''))
+                }
+                window.open('http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?' + s.join('&'), '_blank')
             }
         },
         mounted () {

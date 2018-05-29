@@ -58,7 +58,7 @@
                                     href: '/topic/' + obj.row.id,
                                     target: '_blank'
                                 }
-                            }, obj.row.user.name)
+                            }, obj.row.name)
                         )
                     }
                 },
@@ -132,7 +132,7 @@
                                     href: '/topic/' + obj.row.id,
                                     target: '_blank'
                                 }
-                            }, obj.row.user.name)
+                            }, obj.row.name)
                         )
                     }
                 },
