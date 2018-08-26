@@ -5,22 +5,71 @@
             <a v-for="cateItem in categories" class="categoties-item" :href="'/?cate=' + cateItem.id" :class="{'categoties-select': cateItem.id == cate}">{{cateItem.name}}</a>
         </div>
         <div class="home-articles-box">
-            <div v-for="article in articles" class="articles-cell">
-                <a :href="'/user/' + article.user.id" target="_blank" class="user-icon-box"><img :src="article.user.avatarUrl" alt=""/></a>
-                <span class="home-tip-container">
-                    <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
-                        <a :href="'/topic/' + article.id" target="_blank" class="no-underline">
-                            <span class="articles-click-num">{{article.commentCount}}</span>
-                            <span class="articles-num-split">/</span>
-                            <span class="articles-res-num">{{article.browseCount}}</span>
-                        </a>
-                    </Tooltip>
-                </span>
-                <span class="articles-categoties" :class="article.isTop ? 'articles-categoties-top' : 'articles-categoties-common' ">{{article.isTop ? '置顶' : article.categories[0].name}}</span>
-                <a :href="'/topic/' + article.id" target="_blank" class="home-articles-title" :title="article.name">{{article.name | entity2HTML}}</a>
-                <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
-                <a v-if="article.lastUser && article.lastUser.id" :href="'/user/' + article.lastUser.id" target="_blank" class="user-small-icon-box"><img :src="article.lastUser.avatarUrl" alt=""/></a>
-            </div>
+            <template v-for="article in articles">
+                <!-- 无图 -->
+                <div  class="articles-cell" v-if="article.content.imgCount <= 0">
+                    <a :href="'/user/' + article.user.id" target="_blank" class="user-icon-box"><img :src="article.user.avatarUrl" alt=""/></a>
+                    <span class="home-tip-container">
+                        <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
+                            <a :href="'/topic/' + article.id" target="_blank" class="no-underline">
+                                <span class="articles-click-num">{{article.commentCount}}</span>
+                                <span class="articles-num-split">/</span>
+                                <span class="articles-res-num">{{article.browseCount}}</span>
+                            </a>
+                        </Tooltip>
+                    </span>
+                    <span class="articles-categoties" :class="article.isTop ? 'articles-categoties-top' : 'articles-categoties-common' ">{{article.isTop ? '置顶' : article.categories[0].name}}</span>
+                    <a :href="'/topic/' + article.id" target="_blank" class="home-articles-title" :title="article.name">{{article.name | entity2HTML}}</a>
+                    <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
+                    <a v-if="article.lastUser && article.lastUser.id" :href="'/user/' + article.lastUser.id" target="_blank" class="user-small-icon-box"><img :src="article.lastUser.avatarUrl" alt=""/></a>
+                </div>
+                <!-- 1-2张图 -->
+                <div class="articles-cell-one" v-else-if="article.content.imgCount < 3">
+                    <div class="left">
+                        <img :src="article.content.src" :alt="article.name"/>
+                    </div>
+                    <div class="right">
+                        <a :href="'/user/' + article.user.id" target="_blank" class="user-icon-box"><img :src="article.user.avatarUrl" alt=""/></a>
+                        <span class="home-tip-container">
+                        <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
+                            <a :href="'/topic/' + article.id" target="_blank" class="no-underline">
+                                <span class="articles-click-num">{{article.commentCount}}</span>
+                                <span class="articles-num-split">/</span>
+                                <span class="articles-res-num">{{article.browseCount}}</span>
+                            </a>
+                        </Tooltip>
+                        </span>
+                        <span class="articles-categoties" :class="article.isTop ? 'articles-categoties-top' : 'articles-categoties-common' ">{{article.isTop ? '置顶' : article.categories[0].name}}</span>
+                        <a :href="'/topic/' + article.id" target="_blank" class="home-articles-title" :title="article.name">{{article.name | entity2HTML}}</a>
+                        <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
+                        <a v-if="article.lastUser && article.lastUser.id" :href="'/user/' + article.lastUser.id" target="_blank" class="user-small-icon-box"><img :src="article.lastUser.avatarUrl" alt=""/></a>
+                    </div>
+                </div>
+                <!-- 3张以上 -->
+                <div class="articles-cell-three" v-else>
+                    <div class="top">
+                        <a :href="'/user/' + article.user.id" target="_blank" class="user-icon-box"><img :src="article.user.avatarUrl" alt=""/></a>
+                        <span class="home-tip-container">
+                        <Tooltip :content="`回复数${article.commentCount}　浏览数${article.browseCount}`" placement="bottom-start" class="home-tip-box">
+                            <a :href="'/topic/' + article.id" target="_blank" class="no-underline">
+                                <span class="articles-click-num">{{article.commentCount}}</span>
+                                <span class="articles-num-split">/</span>
+                                <span class="articles-res-num">{{article.browseCount}}</span>
+                            </a>
+                        </Tooltip>
+                        </span>
+                        <span class="articles-categoties" :class="article.isTop ? 'articles-categoties-top' : 'articles-categoties-common' ">{{article.isTop ? '置顶' : article.categories[0].name}}</span>
+                        <a :href="'/topic/' + article.id" target="_blank" class="home-articles-title" :title="article.name">{{article.name | entity2HTML}}</a>
+                        <p class="articles-res-time">{{article.createdAt | getReplyTime}}</p>
+                        <a v-if="article.lastUser && article.lastUser.id" :href="'/user/' + article.lastUser.id" target="_blank" class="user-small-icon-box"><img :src="article.lastUser.avatarUrl" alt=""/></a>
+                    </div>
+                    <div class="bottom">
+                        <img :src="article.content.src[0]" :alt="article.name"/>
+                        <img :src="article.content.src[1]" :alt="article.name"/>
+                        <img :src="article.content.src[2]" :alt="article.name"/>
+                    </div>
+                </div>
+            </template>
 
             <div v-if="articles.length > 0" style="text-align: center;">
                 <span v-if="totalVisible" class="ivu-page-total" style="margin-top: 10px;vertical-align: top;">共 {{totalCount}} 条</span>
@@ -39,6 +88,7 @@
     import request from '~/net/request'
     import dateTool from '~/utils/date'
     import htmlUtil from '~/utils/html'
+    import simple from '~/utils/simpleTopic'
 
     export default {
         data () {
@@ -82,6 +132,9 @@
                     })
                     articles = topList.concat(articles)
                 }
+                articles.map(items => {
+                    items.content = simple(items.content || '', 'markDown')
+                })
                 return {
                     categories: categories,
                     articles: articles,
