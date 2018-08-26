@@ -21,4 +21,7 @@ nginx详细设置请参考网络文档，本项目nginx配置文件在config下�
 关于node，请先执行npm install命令。开发环境使用npm run dev，生产环境请先构建项目。  
 所有启动完毕后访问 http://127.0.0.1/ 到达主页。  
 ### 效果图
-![主页](/homePage.png)
+#### 主页
+![主页](/homePage.png)  
+#### 文章列表接口响应
+![文章接口响应](/articlelist.png)  
