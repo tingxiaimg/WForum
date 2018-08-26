@@ -16,9 +16,9 @@ nginx详细设置请参考网络文档，本项目nginx配置文件在config下�
 ### 6.文件系统
 系统使用操作系统文件存储，请注意各操作系统之间的差异。
 ## 运行
-请先启动mysql，redis；然后启动tomcat以及node服务器；最后启动nginx。（不清楚请网上查阅资料）
-关于redis启动，进入redis根目录，输入命令：./redis-server ./redis.conf
-关于node，请先执行npm install命令。开发环境使用npm run dev，生产环境请先构建项目。
-所有启动完毕后访问 http://127.0.0.1/ 到达主页。
+请先启动mysql，redis；然后启动tomcat以及node服务器；最后启动nginx。（不清楚请网上查阅资料）  
+关于redis启动，进入redis根目录，输入命令：./redis-server ./redis.conf  
+关于node，请先执行npm install命令。开发环境使用npm run dev，生产环境请先构建项目。  
+所有启动完毕后访问 http://127.0.0.1/ 到达主页。  
 ### 效果图
 ![主页](/homePage.png)
